@@ -18,6 +18,10 @@ This document provides an overview of the core API endpoints for user authentica
 
 - Description : for logout the user
 
+### POST `/forgot-password`
+
+- Description : forgot the password
+
 ---
 
 ## Profile Management
