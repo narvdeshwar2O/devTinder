@@ -6,13 +6,18 @@ const User = require("../models/user.model.js");
 const authRouter = express.Router();
 
 authRouter.post("/login", async (req, res) => {
-  console.log("login api called");
+  // console.log("login api called");
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email: email });
     console.log("current email user", user);
     if (!user) {
-      throw new Error("User doesn't exit kindly create account.");
+      return res
+        .status(401)
+        .json({
+          messgae: "Email doesn't exits please create a new account.",
+          status: false,
+        });
     }
     const isValidPassword = await user.verifyPassword(password);
     if (!isValidPassword) {
@@ -22,15 +27,13 @@ authRouter.post("/login", async (req, res) => {
     console.log(token);
     // res.cookie("token", "ravi");
     res.cookie("token", token);
-    res
-      .status(200)
-      .json({
-        message: "User logged in successfully",
-        status: true,
-        data: user,
-      });
+    res.status(200).json({
+      message: "User logged in successfully",
+      status: true,
+      data: user,
+    });
   } catch (error) {
-    res.status(401).send(error.message);
+    res.status(401).json({ message: "Unauthriosed user" });
   }
 });
 
