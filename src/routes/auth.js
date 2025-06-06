@@ -10,6 +10,7 @@ authRouter.post("/login", async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
+    console.log("current user", user);
 
     if (!user) {
       return res.status(401).json({
@@ -32,10 +33,11 @@ authRouter.post("/login", async (req, res) => {
     const token = await user.getJWT();
     res.cookie("token", token);
 
+    const { password: _, ...currentUser } = user.toObject();
     return res.status(200).json({
       message: "User logged in successfully",
       status: true,
-      data: user,
+      data: currentUser,
     });
   } catch (error) {
     return res.status(500).json({
@@ -51,8 +53,8 @@ authRouter.post("/signup", async (req, res) => {
   try {
     validateSignup(req);
     const { firstName, email, password } = req.body;
-    // checking whether email is already registered
 
+    // checking whether email is already registered
     const isEmailAlreadyExits = await User.findOne({ email });
     if (isEmailAlreadyExits) {
       return res.status(400).json({ message: "Email already registered" });
@@ -61,6 +63,7 @@ authRouter.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ firstName, email, password: hashedPassword });
     const data = await user.save();
+
     res
       .status(201)
       .json({ message: "You have successfully SignUp", data: data });
