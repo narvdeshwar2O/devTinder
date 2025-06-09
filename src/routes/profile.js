@@ -11,7 +11,7 @@ const profileRouter = express.Router();
 profileRouter.get("/profile/view", userAuth, (req, res) => {
   try {
     const currentUser = req.user;
-    res.status(200).json({ currentUser });
+    res.status(200).json({ data: currentUser });
   } catch (error) {
     res.status(401).json({ error: error.message });
   }
@@ -73,7 +73,6 @@ profileRouter.patch("/profile/editpassword", userAuth, async (req, res) => {
 
     await user.save();
     res.status(200).json({ message: "Your password updated successfully!" });
-
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

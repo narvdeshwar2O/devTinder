@@ -57,7 +57,9 @@ authRouter.post("/signup", async (req, res) => {
     // checking whether email is already registered
     const isEmailAlreadyExits = await User.findOne({ email });
     if (isEmailAlreadyExits) {
-      return res.status(400).json({ message: "Email already registered" });
+      return res
+        .status(400)
+        .json({ status: 200, message: "Email already registered" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
